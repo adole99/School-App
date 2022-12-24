@@ -1,0 +1,13 @@
+<h3>Sign Up Page</h3>
+
+<form method="POST">
+	{% csrf_token %}
+	{{form.as_p}}
+    
+    <div>
+        <button type="submit" class="btn btn-primary w-100 mb-4">Sign Up</button>
+    </div>
+</form>
+
+<small><a href="{% url 'accounts:login' %}">Login</a></small>
+<small><a href="{% url 'accounts:index' %}">Back to home</a></small>
