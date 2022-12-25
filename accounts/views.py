@@ -12,7 +12,7 @@ from django.template import Context
 from django.core.mail import send_mail
 from .tokens import account_activation_token
 from django.conf import settings
-
+from accounts.decorators import student_required, teacher_required
 # Create your views here.
 def index(request):
 	return render(request, 'index.html')
@@ -51,7 +51,7 @@ def register(request):
 			})
 			user.email_user(subject, message)
 			messages.success(request, 'Please confirm your email to complete registration')
-			return redirect("login")
+			return redirect("accounts:login")
 	form = SignupForm()
 	return render(request, "registration/register.html", {"form": form})
 
@@ -65,15 +65,23 @@ def activate_account_view(request, uidb64, token):
         user.is_active = True
         user.save() 
         login(request, user)
-        return redirect('accounts:dashboard')
+        return redirect(f'accounts:{user.role}-home')
     else:
         return HttpResponse('Activation link is invalid')
 
-def dashboard(request):
-    return render(request, "accounts/dashboard.html")
+# def dashboard(request):
+#     return render(request, "accounts/dashboard.html")
 
+@student_required
 def student_home(request):
     return render(request, "accounts/student/dashboard.html")
 
+def student_profile(request):
+	return render(request, "accounts/teacher/teacher-profile.html")
+
+@teacher_required
 def teacher_home(request):
     return render(request, "accounts/teacher/dashboard.html")
+
+def teacher_profile(request):
+	return render(request, "accounts/teacher/teacher-profile.html")
