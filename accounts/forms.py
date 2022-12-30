@@ -1,5 +1,6 @@
 from django import forms
-from accounts.models import CustomUser
+from accounts.models import CustomUser, StudentProfile, TeacherProfile
+from .tasks import send_confirmation_mail_task
 
 class SignupForm(forms.ModelForm):
 	username = forms.CharField(
@@ -27,3 +28,18 @@ class SignupForm(forms.ModelForm):
 	    user.set_password(self.cleaned_data['password1'])        
 	    user.save()
 	    return user
+
+	def send_email(self):
+	    send_confirmation_mail_task.delay(
+	        self.cleaned_data['username'], self.cleaned_data['email']
+	    )
+
+class StudentProfileForm(forms.ModelForm):
+	class Meta:
+		model = StudentProfile
+		exclude = ['user']
+
+class TeacherProfileForm(forms.ModelForm):
+	class Meta:
+		model = TeacherProfile
+		exclude = ['user']

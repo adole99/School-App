@@ -2,8 +2,8 @@ from django.db import models
 import uuid
 from django.contrib.auth.models import AbstractUser
 from django.core import exceptions
-from libs.utils.constants import UserType, StudentClass
-
+from libs.utils.constants import UserType
+from administration.models import Subject, StudentClass 
 
 
 class CustomUser(AbstractUser):
@@ -12,11 +12,9 @@ class CustomUser(AbstractUser):
         (UserType.teacher, "teacher"),
     )
 	id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-	first_name = models.CharField(max_length=25, null=True)
-	last_name = models.CharField(max_length=25, null=True)
 	email = models.EmailField(unique=True)
 	role = models.CharField(choices=USER_ROLES, max_length=12, null=True)
-	profile_image = models.ImageField(verbose_name="User Profile Image", upload_to="user_profile_images", blank=True, null=True)
+	profile_created = models.BooleanField(default=False)
 
 	
 	def __str__(self) -> str:
@@ -53,10 +51,14 @@ class Roles(models.Model):
 
 class StudentProfile(models.Model):
 	user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
+	first_name = models.CharField(max_length=25, null=True)
+	last_name = models.CharField(max_length=25, null=True)
+	student_class = models.ForeignKey(StudentClass, on_delete=models.DO_NOTHING, related_name="student_class", null=True)
 	home_address = models.CharField(max_length=100, null=False)
 	hobbies = models.CharField(max_length=50)
 	guardian_name = models.CharField(max_length=50)
 	guardian_phone_number = models.IntegerField()
+	profile_image = models.ImageField(verbose_name="User Profile Image", upload_to="student_profile_image", blank=True, null=True)
 
 	def __str__(self) -> str:
 		return f"{self.user.get_full_name} Student Profile"
@@ -64,22 +66,16 @@ class StudentProfile(models.Model):
 
 class TeacherProfile(models.Model):
 	user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
+	first_name = models.CharField(max_length=25, null=True)
+	last_name = models.CharField(max_length=25, null=True)
+	home_address = models.CharField(max_length=100, null=True)
+	profile_image = models.ImageField(verbose_name="User Profile Image", upload_to="teacher_profile_image", blank=True, null=True)
+
 	
 
 	def __str__(self) -> str:
 	    return f"{self.user.get_full_name} Teacher Profile"
 
-class Subject(models.Model):
-	subject = models.CharField(max_length=30)
-
-	def __str__(self) -> str:
-		return f"{self.subject}"
-
-class StudentClass(models.Model):
-	class_name = models.CharField(max_length=4)
-
-	def __str__(self) -> str:
-		return f"{self.class_name}"
 
 
 		

@@ -15,13 +15,11 @@ def student_required(func):
 
         if request.user.is_anonymous:
             return redirect(reverse('accounts:login'))
-        if request.user.role == 'student':
-            pass
-        else:
-            return redirect(reverse('accounts:login'))
-        
+        if request.user.profile_created == False:
+            return redirect('accounts:student-profile')
+        if request.user.role == 'teacher':
+            return redirect('accounts:teacher-home')    
         return func(request, *args, **kwargs)
-
     return wrap
 
 def teacher_required(func):
@@ -34,11 +32,9 @@ def teacher_required(func):
 
         if request.user.is_anonymous:
             return redirect(reverse('accounts:login'))
-        if request.user.role == 'teacher':
-            pass
-        else:
-            return redirect(reverse('accounts:login'))
-        
+        if request.user.profile_created == False:
+            return redirect('accounts:teacher-profile')
+        if request.user.role == 'student':
+            return redirect('accounts:student-home')
         return func(request, *args, **kwargs)
-
     return wrap
