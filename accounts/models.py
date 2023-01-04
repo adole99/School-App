@@ -3,7 +3,6 @@ import uuid
 from django.contrib.auth.models import AbstractUser
 from django.core import exceptions
 from libs.utils.constants import UserType
-from administration.models import Subject, StudentClass 
 
 
 class CustomUser(AbstractUser):
@@ -53,11 +52,11 @@ class StudentProfile(models.Model):
 	user = models.OneToOneField(CustomUser, on_delete=models.CASCADE, primary_key=True)
 	first_name = models.CharField(max_length=25, null=True)
 	last_name = models.CharField(max_length=25, null=True)
-	student_class = models.ForeignKey(StudentClass, on_delete=models.DO_NOTHING, related_name="student_class", null=True)
+	# student_class = models.ForeignKey(StudentClass, on_delete=models.DO_NOTHING, related_name="student_class", null=True)
 	home_address = models.CharField(max_length=100, null=False)
-	hobbies = models.CharField(max_length=50)
-	guardian_name = models.CharField(max_length=50)
-	guardian_phone_number = models.IntegerField()
+	# hobbies = models.CharField(max_length=50)
+	# guardian_name = models.CharField(max_length=50)
+	# guardian_phone_number = models.IntegerField()
 	profile_image = models.ImageField(verbose_name="User Profile Image", upload_to="student_profile_image", blank=True, null=True)
 
 	def __str__(self) -> str:

@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from accounts import models
-from administration.models import Subject, StudentClass 
+
 
 # Register your models here.
 class CustomUserAdmin(UserAdmin):
@@ -59,5 +59,3 @@ admin.site.register(models.CustomUser, CustomUserAdmin)
 admin.site.register(models.Roles)
 admin.site.register(models.StudentProfile)
 admin.site.register(models.TeacherProfile)
-admin.site.register(models.Subject)
-admin.site.register(models.StudentClass)

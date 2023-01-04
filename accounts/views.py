@@ -39,20 +39,10 @@ def register(request):
 		form = SignupForm(request.POST)
 		if form.is_valid():
 			role = form.cleaned_data['role']
-			# form.save()
 			form.send_email()
 			user = form.save(commit=False)
 			user.save()
 			Roles.objects.get_or_create(role=role, user=user)
-			# current_site = get_current_site(request)
-			# subject = 'Activate Your Book-app Account'
-			# message = render_to_string('email.html', {
-			# 	'user': user,
-			# 	'domain': current_site.domain,
-			# 	'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-			# 	'token': account_activation_token.make_token(user),
-			# })
-			# user.email_user(subject, message)
 			messages.success(request, 'Please confirm your email to complete registration')
 			return redirect("accounts:login")
 	form = SignupForm()
@@ -71,9 +61,6 @@ def activate_account_view(request, uidb64, token):
         return redirect(f'accounts:{user.role}-home')
     else:
         return HttpResponse('Activation link is invalid')
-
-# def dashboard(request):
-#     return render(request, "accounts/dashboard.html")
 
 @student_required
 def student_home(request):
